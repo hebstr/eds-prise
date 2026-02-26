@@ -18,6 +18,24 @@ id <- Sys.getenv("ID")
 
 .cim10 <- "M1901|M25(3|5)1|M75|S46"
 
+.ccam_list <- list(
+  infiltr_ms = "MZLB001|MZLH002|MZLH001|ZZLJ002",
+  chir_epaule = list(
+    coiffe_rot = "MJEC001|MJEC002|MJEA010|MJEA006|MJMA003",
+    acromioplastie = "MEMC003|MEMA006|MEMC005",
+    arthroplasties_scapulohum = "MEKA0(0[5-9]|10)",
+    reprise_chir = "MEKA002|MEMA015",
+    explo_artho = "MEQC002"
+  ),
+  ponction = "MZJB001"
+)
+
+.ccam <-
+.ccam_list |>
+  list_flatten() |>
+  list_c() |>
+  paste(collapse = "|")
+
 .col <- lst(
   id = Sys.getenv("COL_ID"),
   group = Sys.getenv("COL_GROUP"),

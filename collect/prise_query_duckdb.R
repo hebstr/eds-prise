@@ -10,10 +10,14 @@ db <- set_names(names(conn$db)) |> map("")
 
 db$duckdb$code <-
 conn$tbl$duckdb("code") |>
+  mutate(
+    CODE = paste0(CODE_THESAURUS, CODE, sep = "_"),
+    TEXTE = if_else(CODE_THESAURUS == "ccam", "1", TEXTE)
+  ) |>
   select(ID_PAT, CODE, TEXTE) |>
+  distinct() |>
   pivot_wider(
     names_from = CODE,
-    names_prefix = "CIM_",
     values_from = TEXTE
   )
 
@@ -57,7 +61,8 @@ conn$tbl$oracle(str_glue("ETUDE_{toupper(id)}_DOC")) |>
     doc_type = type_doc,
     doc_titre = titre,
     doc_texte = texte_affichage,
-    starts_with("cim")
+    starts_with("cim"),
+    starts_with("ccam")
   ) |>
   mutate(across(starts_with("id_"), as.character)) |>
   arrange(id_pat, sej_date_entree) |>

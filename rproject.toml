@@ -14,4 +14,5 @@ dependencies = [
     "duckdb",
     "openxlsx2",
     "DBI",
+    "pak",
 ]

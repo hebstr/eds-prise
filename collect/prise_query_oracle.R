@@ -78,8 +78,8 @@ conn$tbl$oracle("EDBM_EDS.EHOP_ENTREPOT_STRUCTURE") |>
   select(ID_ENTREPOT, ID_PAT, ID_SEJ, CODE_THESAURUS, CODE, DATE_DATA, TEXTE) |>
   mutate(CODE = replace(CODE, "\\s+.+", "")) |>
   filter(
-    CODE_THESAURUS == "cim10",
-    sql(str_glue("REGEXP_LIKE(CODE, '{.cim10}')"))
+    CODE_THESAURUS %in% c("cim10", "ccam"),
+    sql(str_glue("REGEXP_LIKE(CODE, '{.cim10}|{.ccam}')"))
   )
 
 ### COPY DB DUCKDB -------------------------------------------------------------

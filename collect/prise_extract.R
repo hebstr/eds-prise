@@ -27,11 +27,18 @@ df_clean <- edstr_clean(
   replace = src_config("clean"),
 )
 
+df_clean_filter <-
+df_clean |>
+  filter(
+    if_any(starts_with("cim10"), ~ !is.na(.)),
+    if_any(starts_with("ccam"), ~ !is.na(.))
+  )
+
 df_extract <- edstr_extract(
-  data = df_clean,
+  data = df_clean_filter,
   token = 1:3,
   concepts = concepts,
-  intersect = TRUE,
+  # intersect = TRUE,
   group = "id_pat"
 )
 
