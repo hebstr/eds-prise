@@ -1,0 +1,28 @@
+body {
+    zoom: 0.92;
+}
+
+.page {
+    border: 0.5rem solid #333333;
+    border-radius: 12px;
+    background-color: #FFFFFF;
+}
+
+.extract {
+    font-weight: bold;
+    font-family: system-ui;
+    padding: 0 0.2rem;
+    border-radius: 5px;
+    color: #FF0000;
+    background-color: #FFFF00;
+}
+
+span[class*='post'] {
+    color: #8000FF;
+    background-color: color-mix(in srgb, currentcolor, white 95%);
+}
+
+span[class*='dr'] {
+    color: #0080FF;
+    background-color: color-mix(in srgb, currentcolor, white 95%);
+}

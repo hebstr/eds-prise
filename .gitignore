@@ -1,0 +1,29 @@
+# R
+.Rhistory
+.Rproj.user
+
+# quarto
+/.quarto/
+/_freeze/
+/_book/
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Data
+**/data*/
+*.webm
+secrets.toml
+
+# Config
+/.luarc.json
+
+**/*.quarto_ipynb
