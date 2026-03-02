@@ -1,0 +1,18 @@
+[project]
+name = "eds_prise"
+r_version = "4.5"
+
+repositories = [
+    { alias = "CRAN", url = "https://packagemanager.posit.co/cran/latest" },
+]
+
+dependencies = [
+    "tidyverse",
+    { name = "edstr", git = "https://codeberg.org/hebstr/edstr.git", branch = "main" },
+    "yardstick",
+    "DatabaseConnector",
+    "duckdb",
+    "openxlsx2",
+    "DBI",
+    "pak",
+]

@@ -1,0 +1,127 @@
+:root {
+    --primary-color: #FF0000;
+    --secondary-color: #0080FF;
+}
+
+html {
+    font-size: 1rem;
+}
+
+.stMainBlockContainer {
+    padding: 0 0.8rem;
+    margin: 0;
+}
+
+body {
+    zoom: 1;
+}
+
+div[data-testid="stDecoration"],
+div[data-testid="stSidebarCollapseButton"],
+div[data-testid="stElementToolbarButtonContainer"],
+.stAppDeployButton {
+    visibility: hidden;
+}
+
+.stHeading h1 {
+    margin-top: -2rem;
+    padding-bottom: 1.5rem;
+    text-align: center;
+    font-weight:bold;
+}
+
+iframe {
+    border-radius: 8px;
+}
+
+.stSidebar {
+    width: 30rem !important;
+}
+
+.stAppHeader,
+div[data-testid="stSidebarHeader"] {
+    display: none;
+}
+
+div[data-testid="stSidebarUserContent"] {
+    padding-bottom: 0;
+}
+
+div[data-testid="stMarkdownContainer"] hr {
+    margin: 0;
+}
+
+.sidebar-footer-title {
+    margin-top:0.25rem;
+    margin-bottom:0.25rem;
+    text-align: center;
+}
+
+.sidebar-footer-concept,
+.sidebar-footer-extract,
+.sidebar-footer-citations,
+.sidebar-footer-raisonnement {
+    font-size: 1rem;
+    font-weight:bold;
+    line-height: 1.2rem;
+    padding: 0.5rem;
+    text-align: center;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+}
+
+.sidebar-footer-concept {
+    color: #0099EE;
+}
+
+.sidebar-footer-extract {
+    color: black;
+    line-height: 1.3rem;
+    font-size: 0.9rem;
+}
+
+.sidebar-footer-citations {
+    color: #555;
+}
+
+.sidebar-footer-raisonnement {
+    color: #0099FF;
+}
+
+.st-key-slider-doc div[data-baseweb="slider"] div {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.st-key-slider-note {
+    margin: -1.5rem 0;
+    pointer-events: none;
+    div[data-testid="stSliderTickBar"],
+    div[role="slider"] {
+        display: none;
+    }
+}
+
+.st-key-button-tuto {
+    border: 1px solid var(--secondary-color);
+    background-color: var(--secondary-color);
+}
+
+.st-key-button-tuto,
+.st-key-button-save,
+.st-key-button-download-visible {
+    border-radius: 8px;
+}
+
+.st-key-button-download-hidden {
+    display: none;
+}
+
+div[data-testid="stColumn"] iframe {
+    height: 86vh;
+}
+
+div[data-testid="stColumn"] div[data-testid="stDataFrame"] > div {
+    height: 86vh !important;
+    max-height: 86vh !important;
+}
