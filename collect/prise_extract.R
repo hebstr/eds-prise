@@ -20,7 +20,7 @@ edstr_config(
   edstr_text = .col$text
 )
 
-df_import <- edstr_import(load = TRUE)
+df_import <- edstr_import()
 
 df_clean <- edstr_clean(
   data = df_import,
