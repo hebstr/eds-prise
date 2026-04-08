@@ -28,7 +28,7 @@ df_clean <- edstr_clean(
 )
 
 df_clean_filter <-
-df_clean |>
+  df_clean |>
   filter(
     if_any(starts_with("cim10"), ~ !is.na(.)),
     if_any(starts_with("ccam"), ~ !is.na(.))

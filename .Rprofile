@@ -31,7 +31,7 @@ id <- Sys.getenv("ID")
 )
 
 .ccam <-
-.ccam_list |>
+  .ccam_list |>
   list_flatten() |>
   list_c() |>
   paste(collapse = "|")
@@ -60,7 +60,6 @@ connect_db <- \(
   user = "edbm",
   name_duckdb = str_glue("collect/data/{id}_query.duckdb")
 ) {
-
   lst(
     db = lst(
       oracle = edsConnect(user = user),
@@ -68,11 +67,9 @@ connect_db <- \(
     ),
     tbl = map(db, ~ \(x) tbl(., I(x)))
   )
-
 }
 
 copy_to_db <- \(df, dest, name, ...) {
-
   copy_to(
     df = df,
     dest = conn$db[[dest]],
@@ -82,17 +79,14 @@ copy_to_db <- \(df, dest, name, ...) {
     analyze = FALSE,
     ...
   )
-
 }
 
 copy_to_duckdb <- \(.x, .y) {
-
   cli::cli_progress_step(.y)
 
   copy_to_db(df = .x, name = .y, dest = "duckdb")
 
   cli::cli_progress_done()
-
 }
 
 name_duckdb <- str_glue("collect/data/{id}_query.duckdb")
@@ -100,28 +94,28 @@ name_duckdb <- str_glue("collect/data/{id}_query.duckdb")
 name_tbl <- \(x) toupper(str_glue("etude_{str_to_snake(id)}_{x}"))
 
 check_all_ref <- \(df1, df2) {
-
   sum_ref <- \(x) {
-
     data <- distinct(x, id_sej, sej_ref)
 
     sum(data$sej_ref == 1)
-
   }
 
   identical(sum_ref(df1), sum_ref(df2))
-
 }
 
 ### READ CSV -------------------------------------------------------------------
 
 set_coltypes <- \(...) {
-
   cols(
-    id_doc = "c", id_sej = "c", id_pat = "c", id_iep = "c", id_ipp = "c",
-    pat_sexe = "f", doc_uf_code = "c", ...
+    id_doc = "c",
+    id_sej = "c",
+    id_pat = "c",
+    id_iep = "c",
+    id_ipp = "c",
+    pat_sexe = "f",
+    doc_uf_code = "c",
+    ...
   )
-
 }
 
 easy_read_csv <- \(file, ...) read_delim(file, col_types = set_coltypes(...))
@@ -134,42 +128,34 @@ auto_output_ls <- \(
   subset = "",
   negate = FALSE
 ) {
-
   output_glob <- str_glue("*output*.{format}")
   output_extract <- str_glue("(?<=output_).+(?=\\.{format})")
 
   output_ls <-
-  fs::dir_ls(path = dir, glob = output_glob) |>
+    fs::dir_ls(path = dir, glob = output_glob) |>
     as.character() |>
     set_names(str_extract, output_extract)
 
   if (nzchar(subset)) str_subset(output_ls, subset, negate) else output_ls
-
 }
 
 auto_output_read <- \(data, text = "doc_texte", fmt_json = TRUE) {
-
   .fun <- \(x) {
-
     data_read <-
-    easy_read_csv(x) |>
+      easy_read_csv(x) |>
       select(-all_of(text)) |>
       mutate(ntoken_out = round((nchar(llm) / 3.5), 1))
 
     if (fmt_json) {
-
       data_read$llm <-
-      str_replace_all(data_read$llm, c("^\\{" = "[{", "\\}$" = "}]")) |>
+        str_replace_all(data_read$llm, c("^\\{" = "[{", "\\}$" = "}]")) |>
         map(fromJSON)
-
     }
 
     return(data_read)
-
   }
 
   map(data, .fun)
-
 }
 
 auto_output_data <- \(
@@ -183,7 +169,6 @@ auto_output_data <- \(
   estimate_id,
   estimate_group
 ) {
-
   estimate_name <- names(estimate)
   false <- list_c(estimate)[["false"]]
 
@@ -202,16 +187,19 @@ auto_output_data <- \(
       .by = {{ group }},
     ) |>
     relocate(-all_of(truth))
-
 }
 
 auto_config_ntoken <- \(data, max = 8000) {
-
   .outliers <-
-  data |>
+    data |>
     select(
-      n, .col$id, .col$estimate_id, .col$estimate_group, .col$truth,
-      ntoken, ntoken_out
+      n,
+      .col$id,
+      .col$estimate_id,
+      .col$estimate_group,
+      .col$truth,
+      ntoken,
+      ntoken_out
     ) |>
     filter(ntoken > max)
 
@@ -223,7 +211,6 @@ auto_config_ntoken <- \(data, max = 8000) {
     ),
     outliers = if (nrow(.outliers) == 0) NULL else .outliers
   )
-
 }
 
 auto_config_confmat <- \(
@@ -236,7 +223,6 @@ auto_config_confmat <- \(
   estimate_group,
   metrics = "^(k|sp|pr|r|f|acc)"
 ) {
-
   z <- enexprs(
     id = id,
     group = group,
@@ -247,7 +233,12 @@ auto_config_confmat <- \(
 
   distinct_by <- \(id_col, ...) distinct(data, {{ id_col }}, ..., !!z$truth)
 
-  data_id <- distinct_by(!!z$id, .data[[estimate]], !!z$estimate_id, !!z$estimate_group)
+  data_id <- distinct_by(
+    !!z$id,
+    .data[[estimate]],
+    !!z$estimate_id,
+    !!z$estimate_group
+  )
   data_group <- distinct_by(!!z$group, !!z$estimate_group)
 
   .table <- yardstick::conf_mat(
@@ -258,10 +249,12 @@ auto_config_confmat <- \(
 
   .metrics <- filter(summary(.table), str_detect(.metric, metrics))
 
-  data_mismatch <- \(x) lst(
-    fn = filter(x, !!z$truth == 1 & !!z$estimate_group == 0),
-    fp = filter(x, !!z$truth == 0 & !!z$estimate_group == 1)
-  )
+  data_mismatch <- \(x) {
+    lst(
+      fn = filter(x, !!z$truth == 1 & !!z$estimate_group == 0),
+      fp = filter(x, !!z$truth == 0 & !!z$estimate_group == 1)
+    )
+  }
 
   .mismatch <- lst(
     id = data_mismatch(data_id),
@@ -273,28 +266,24 @@ auto_config_confmat <- \(
     metrics = .metrics,
     mismatch = .mismatch
   )
-
 }
 
 sep_prompt_model <- \(data, col, names = c("prompt", "model")) {
-
   separate_wider_delim(
     data = data,
     cols = {{ col }},
     delim = "_",
     names = names
   )
-
 }
 
 auto_summary_pred <- \(data, estimate = .estimate) {
-
   var <- names(.estimate)
 
   values <- str_glue("\\b{unlist(.estimate)}\\b")
 
   df <-
-  data |>
+    data |>
     imap(~ pluck(.x, "pred") |> mutate(config = .y)) |>
     bind_rows()
 
@@ -307,11 +296,9 @@ auto_summary_pred <- \(data, estimate = .estimate) {
       total_doc = rowSums(across(where(is.integer)), na.rm = TRUE),
     ) |>
     sep_prompt_model(col = config)
-
 }
 
 auto_summary_table <- \(data, names_prefix = "confmat") {
-
   .names <- paste0(names_prefix, "_", c("vp", "fn", "fp", "vn"))
 
   data |>
@@ -324,11 +311,9 @@ auto_summary_table <- \(data, names_prefix = "confmat") {
     select(config, confmat, n) |>
     pivot_wider(names_from = "confmat", values_from = "n") |>
     mutate("{names_prefix}_total" := rowSums(across(where(is.numeric))))
-
 }
 
 auto_summary_metrics <- \(data, names = "metric_{.metric}") {
-
   data |>
     imap(
       ~ pluck(.x, "metrics") |>
@@ -337,11 +322,9 @@ auto_summary_metrics <- \(data, names = "metric_{.metric}") {
     bind_rows() |>
     select(-.estimator) |>
     pivot_wider(names_from = .metric, values_from = .estimate)
-
 }
 
 auto_summary <- \(data, name = "confmat") {
-
   data <- map(data, pluck, name)
   table <- auto_summary_table(data)
   metrics <- auto_summary_metrics(data)
@@ -349,7 +332,6 @@ auto_summary <- \(data, name = "confmat") {
   lst(table, metrics) |>
     reduce(inner_join, by = "config") |>
     sep_prompt_model(col = config)
-
 }
 
 ### XLSX -----------------------------------------------------------------------
@@ -366,7 +348,6 @@ auto_summary <- \(data, name = "confmat") {
   border_type = "thin",
   color = NULL
 ) {
-
   options(openxlsx2.maxWidth = max_width)
 
   params <- list(
@@ -381,13 +362,15 @@ auto_summary <- \(data, name = "confmat") {
     )
   )
 
-  add_color <- \(wb, vars, color) wb_add_font(
-    wb = wb,
-    dims = wb_dims(x = data, cols = vars, select = "data"),
-    color = wb_color(color),
-    size = font_size,
-    bold = TRUE
-  )
+  add_color <- \(wb, vars, color) {
+    wb_add_font(
+      wb = wb,
+      dims = wb_dims(x = data, cols = vars, select = "data"),
+      color = wb_color(color),
+      size = font_size,
+      bold = TRUE
+    )
+  }
 
   output <- wb_add_worksheet(
     wb = x,
@@ -412,7 +395,7 @@ auto_summary <- \(data, name = "confmat") {
       color = params$colors$header
     ) |>
     wb_set_col_widths(
-      cols = 1:ncol(data),
+      cols = seq_len(ncol(data)),
       widths = "auto"
     ) |>
     wb_add_cell_style(
@@ -444,32 +427,33 @@ auto_summary <- \(data, name = "confmat") {
     )
 
   return(output)
-
 }
 
-get_xlsx <- \(x, ...) reduce2(
-  .x = x,
-  .y = names(x),
-  .f = \(wb, data, name) .xlsx_fun(
-    x = wb,
-    sheet = name,
-    data = data,
-    ...
-  ),
-  .init = wb_workbook()
-)
+get_xlsx <- \(x, ...) {
+  reduce2(
+    .x = x,
+    .y = names(x),
+    .f = \(wb, data, name) {
+      .xlsx_fun(
+        x = wb,
+        sheet = name,
+        data = data,
+        ...
+      )
+    },
+    .init = wb_workbook()
+  )
+}
 
 ### SAFE PATH ------------------------------------------------------------------
 
 check_safe_path <- \(file) {
-
   cli::cli_text("\n\n")
   cli::cli_alert_warning("Le fichier {.strong {file}} existe déja. Continuer ?")
 
   check <- menu(c("Oui", "Non"))
 
   if (check == 1) file else invisible(NULL)
-
 }
 
 safe_path <- \(
@@ -481,29 +465,24 @@ safe_path <- \(
   ext,
   read = FALSE
 ) {
-
   dirname <- fs::path(root, dir, split)
 
   filename <- if (nzchar(subdir)) {
-
     fs::path(subdir, str_glue("{split}_{id}_{str_to_snake(subdir)}"))
-
   } else {
-
     str_glue("{split}_{id}_{root}_{str_to_snake(dir)}")
-
   }
 
-  if (nzchar(suffix)) filename <- str_glue("{filename}_{suffix}")
+  if (nzchar(suffix)) {
+    filename <- str_glue("{filename}_{suffix}")
+  }
 
   path <- fs::path(dirname, filename, ext = ext)
 
   if (!read && fs::file_exists(path)) check_safe_path(path) else path
-
 }
 
 collect_data_extract <- \(subdir = "extract") {
-
   path <- safe_path(
     root = "collect",
     dir = "data",
@@ -512,7 +491,9 @@ collect_data_extract <- \(subdir = "extract") {
     read = TRUE
   )
 
-  if (!fs::file_exists(path)) cli::cli_abort("Le chemin {.path {path}} n'existe pas")
+  if (!fs::file_exists(path)) {
+    cli::cli_abort("Le chemin {.path {path}} n'existe pas")
+  }
 
   data <- readRDS(path)$data
 
@@ -520,13 +501,11 @@ collect_data_extract <- \(subdir = "extract") {
     auto = data$extract,
     man = select(data$csv, .col$id, "extract", .col$text)
   )
-
 }
 
 note_data_path <- \(...) safe_path(root = "note", dir = "data", ...)
 
 note_input_path <- \(dir, suffix = "input", ...) {
-
   safe_path(
     root = "note",
     dir = str_glue("{dir}/data"),
@@ -534,7 +513,6 @@ note_input_path <- \(dir, suffix = "input", ...) {
     ext = "csv",
     ...
   )
-
 }
 
 ### MKDIR ----------------------------------------------------------------------
@@ -548,11 +526,9 @@ c(
 ### SOURCE ---------------------------------------------------------------------
 
 auto_exec <- \(dir = "config", prefix = "_") {
-
   fs::dir_ls(path = dir) |>
     str_subset(str_glue("^[^{prefix}]")) |>
     walk(source)
-
 }
 
 auto_exec()

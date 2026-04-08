@@ -1,5 +1,5 @@
 df_note_man_input <-
-collect_data_extract()$auto |>
+  collect_data_extract()$auto |>
   select(-extract, -.col$text) |>
   left_join(
     y = collect_data_extract()$man[c(.col$id, "extract", .col$text)],

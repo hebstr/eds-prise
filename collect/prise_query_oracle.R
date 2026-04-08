@@ -17,7 +17,7 @@ db <- set_names(names(conn$db)) |> map("")
 ### TBL PAT --------------------------------------------------------------------
 
 db$oracle$pat <-
-conn$tbl$oracle("EDBM_ZPAT.EHOP_PATIENT_MAPPING") |>
+  conn$tbl$oracle("EDBM_ZPAT.EHOP_PATIENT_MAPPING") |>
   left_join(y = conn$tbl$oracle("EDBM_ZPAT.EHOP_PATIENT"), by = "ID_PAT") |>
   left_join(y = conn$tbl$oracle("NOYAU_EDS.PATIENTS_OPPOSITION"), by = "IPP") |>
   filter(
@@ -38,8 +38,11 @@ conn$tbl$oracle("EDBM_ZPAT.EHOP_PATIENT_MAPPING") |>
 ### TBL SEJ --------------------------------------------------------------------
 
 db$oracle$sej <-
-conn$tbl$oracle("EDBM_EDS.EHOP_SEJOUR") |>
-  left_join(y = conn$tbl$oracle("EDBM_ZPAT.EHOP_SEJOUR_MAPPING"), by = "ID_SEJ") |>
+  conn$tbl$oracle("EDBM_EDS.EHOP_SEJOUR") |>
+  left_join(
+    y = conn$tbl$oracle("EDBM_ZPAT.EHOP_SEJOUR_MAPPING"),
+    by = "ID_SEJ"
+  ) |>
   filter(DATE_ENTREE |> between(!!!inclusion$sej$date)) |>
   select(
     ID_SEJ,
@@ -51,14 +54,16 @@ conn$tbl$oracle("EDBM_EDS.EHOP_SEJOUR") |>
 ### TBL DOC --------------------------------------------------------------------
 
 db$oracle$doc <-
-conn$tbl$oracle("EDBM_EDS.EHOP_ENTREPOT") |>
+  conn$tbl$oracle("EDBM_EDS.EHOP_ENTREPOT") |>
   filter(DATESIGNATURE |> between(!!!inclusion$doc$date)) |>
   mutate(EXERCICE = year(DATESIGNATURE)) |>
   left_join(
     y = conn$tbl$oracle("SAS_EDS.STRUCTURE_CHU_HISTORIQUE_2025"),
     by = join_by(EXERCICE, UF == CODE_UF)
   ) |>
-  filter(!(TYPE_DOC %in% exclusion$doc$type | TITRE %in% exclusion$doc$titre)) |>
+  filter(
+    !(TYPE_DOC %in% exclusion$doc$type | TITRE %in% exclusion$doc$titre)
+  ) |>
   select(
     ID_ENTREPOT,
     ID_SEJ,
@@ -74,7 +79,7 @@ conn$tbl$oracle("EDBM_EDS.EHOP_ENTREPOT") |>
 ### TBL CIM10 ------------------------------------------------------------------
 
 db$oracle$code <-
-conn$tbl$oracle("EDBM_EDS.EHOP_ENTREPOT_STRUCTURE") |>
+  conn$tbl$oracle("EDBM_EDS.EHOP_ENTREPOT_STRUCTURE") |>
   select(ID_ENTREPOT, ID_PAT, ID_SEJ, CODE_THESAURUS, CODE, DATE_DATA, TEXTE) |>
   mutate(CODE = replace(CODE, "\\s+.+", "")) |>
   filter(

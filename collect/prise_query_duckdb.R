@@ -9,7 +9,7 @@ db <- set_names(names(conn$db)) |> map("")
 ### EXTRACT DB DUCKDB ----------------------------------------------------------
 
 db$duckdb$code <-
-conn$tbl$duckdb("code") |>
+  conn$tbl$duckdb("code") |>
   mutate(
     CODE = paste0(CODE_THESAURUS, CODE, sep = "_"),
     TEXTE = if_else(CODE_THESAURUS == "ccam", "1", TEXTE)
@@ -22,8 +22,8 @@ conn$tbl$duckdb("code") |>
   )
 
 db$duckdb$sej <-
-conn$tbl$duckdb("sej")# |>
-  #mutate(SEJ_REF = ifelse(IEP %in% !!pull(conn$tbl$duckdb("ref"), IEP), "1", "0"))
+  conn$tbl$duckdb("sej") # |>
+#mutate(SEJ_REF = ifelse(IEP %in% !!pull(conn$tbl$duckdb("ref"), IEP), "1", "0"))
 
 conn$tbl$duckdb("doc") |>
   left_join(y = conn$tbl$duckdb("pat"), by = "ID_PAT") |>
@@ -38,7 +38,8 @@ conn$tbl$duckdb("doc") |>
 
 conn$tbl$oracle(str_glue("ETUDE_{toupper(id)}_DOC")) |>
   left_join(
-    conn$tbl$oracle("EDBM_EDS.EHOP_ENTREPOT") |> select(ID_ENTREPOT, TEXTE_AFFICHAGE)
+    conn$tbl$oracle("EDBM_EDS.EHOP_ENTREPOT") |>
+      select(ID_ENTREPOT, TEXTE_AFFICHAGE)
   ) |>
   rename_with(tolower) |>
   select(
@@ -71,15 +72,18 @@ conn$tbl$oracle(str_glue("ETUDE_{toupper(id)}_DOC")) |>
 db$duckdb$doc <- conn$tbl$duckdb("doc_texte")
 
 df <-
-db$duckdb$doc |>
+  db$duckdb$doc |>
   collect() |>
   mutate(sej_m = str_remove(sej_date_entree, "-\\d{2}$")) |>
-  split(~ sej_m) |>
+  split(~sej_m) |>
   map(~ select(., -sej_m))
 
 walk(str_glue("collect/data/{names(df)}"), fs::dir_create)
 
-iwalk(df, ~ saveRDS(.x, file = str_glue("collect/data/{.y}/{.y}_{id}_import.rds")))
+iwalk(
+  df,
+  ~ saveRDS(.x, file = str_glue("collect/data/{.y}/{.y}_{id}_import.rds"))
+)
 
 ### DB DISCONNECT --------------------------------------------------------------
 

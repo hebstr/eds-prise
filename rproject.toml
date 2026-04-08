@@ -7,12 +7,11 @@ repositories = [
 ]
 
 dependencies = [
-    "tidyverse",
     { name = "edstr", git = "https://codeberg.org/hebstr/edstr.git", branch = "main" },
+    "tidyverse",
     "yardstick",
     "DatabaseConnector",
     "duckdb",
     "openxlsx2",
     "DBI",
-    "pak",
 ]
