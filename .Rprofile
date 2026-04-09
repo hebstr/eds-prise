@@ -2,6 +2,9 @@
 
 source("rv/scripts/rvr.R")
 source("rv/scripts/activate.R")
+system2("rv", "sync")
+system2("uv", "sync")
+
 source("~/.Rprofile")
 readRenviron(".env")
 

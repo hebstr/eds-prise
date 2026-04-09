@@ -20,8 +20,8 @@ CONFIG_DIR = f"{WK_DIR}/.streamlit"
 SECRETS = f"{CONFIG_DIR}/secrets.toml"
 TUTO_TEXT = f"{CONFIG_DIR}/tuto.md"
 TUTO_EMBED = f"{CONFIG_DIR}/tuto.webm"
-INPUT = "input_dr"
-OUTPUT = "output_dr"
+INPUT = "input"
+OUTPUT = "output"
 EMPTY = ""
 
 AUTH = False
@@ -226,23 +226,23 @@ with col_df:
 
 st.sidebar.space()
 
-with st.sidebar.container(key="button-tuto"):
-    click_on_tuto = st.button(
-        label="**COMMENT UTILISER L'APPLICATION**",
-        icon=":material/videocam:",
-        use_container_width=True,
-        disabled=not os.path.exists(TUTO_TEXT) and os.path.exists(TUTO_EMBED),
-    )
+# with st.sidebar.container(key="button-tuto"):
+#     click_on_tuto = st.button(
+#         label="**COMMENT UTILISER L'APPLICATION**",
+#         icon=":material/videocam:",
+#         use_container_width=True,
+#         disabled=not os.path.exists(TUTO_TEXT) and os.path.exists(TUTO_EMBED),
+#     )
 
-    @st.dialog(title=" ", width="large")
-    def display_tuto():
-        with open(TUTO_TEXT) as f:
-            st.markdown(f.read())
-        with open(TUTO_EMBED, "rb") as f:
-            st.video(f)
+#     @st.dialog(title=" ", width="large")
+#     def display_tuto():
+#         with open(TUTO_TEXT) as f:
+#             st.markdown(f.read())
+#         with open(TUTO_EMBED, "rb") as f:
+#             st.video(f)
 
-    if click_on_tuto:
-        display_tuto()
+#     if click_on_tuto:
+#         display_tuto()
 
 st.sidebar.space("stretch")
 

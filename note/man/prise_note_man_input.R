@@ -8,5 +8,5 @@ df_note_man_input <- collect_data_extract()$auto |>
 
 write_parquet(
   x = df_note_man_input,
-  file = note_input_path(dir = "man", "input_dr")
+  file = note_input_path(dir = "man", "input")
 )

@@ -698,7 +698,7 @@ dependencies = []
 
 [[packages]]
 name = "lattice"
-version = "0.22-7"
+version = "0.22-9"
 source = { builtin = true }
 force_source = false
 dependencies = []

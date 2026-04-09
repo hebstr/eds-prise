@@ -1,14 +1,19 @@
 ### CONCEPTS -------------------------------------------------------------------
 
 concepts <- list(
-  pre = list(infiltr = "infilt"),
-  post = list(
-    scap = "epaul|scap|clavic|acrom",
-    cortico = "corti(s|c)"
+  clin = list(
+    patho = "ruptur|tendinopat|bursite|capsulite",
+    sympt = "douleur|scapulalg"
   ),
-  dr = list(
-    np = "amouyel.+thomas",
-    pn = "(dr|docteur|thomas).+amouyel"
+  acte = list(
+    inflt = "infiltrati|echo.*guid|sous.+echo|deriv.+corti[cs]",
+    chir = "reparation|tenotom|resect"
+  ),
+  loc = list(
+    scap = "epaul|scapulair|sub.*scapul|supra.*scapul",
+    coiffe = "coif|rotateur",
+    acro = "acrom(.+(clav|delt))?|sous.*acrom(.+(clav|delt))?",
+    epin = "supra.*epin|infra.*epin"
   )
 )
 
@@ -27,20 +32,23 @@ df_clean <- edstr_clean(
   replace = src_config("clean"),
 )
 
-df_clean_filter <-
-  df_clean |>
-  filter(
-    if_any(starts_with("cim10"), ~ !is.na(.)),
-    if_any(starts_with("ccam"), ~ !is.na(.))
-  )
+# df_clean_filter <-
+#   df_clean |>
+#   filter(
+#     if_any(starts_with("cim10"), ~ !is.na(.)),
+#     if_any(starts_with("ccam"), ~ !is.na(.))
+#   )
 
 df_extract <- edstr_extract(
-  data = df_clean_filter,
+  data = df_clean,
   token = 1:3,
   concepts = concepts,
-  # intersect = TRUE,
+  intersect = TRUE,
   group = "id_pat"
 )
+
+df_extract$data$extract |>
+  count(doc_uf_code, doc_uf_libelle, doc_titre, sort = TRUE)
 
 # df_view <- edstr_view(
 #   data = df_clean,
