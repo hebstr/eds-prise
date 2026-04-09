@@ -9,6 +9,7 @@ library(tidyverse)
 library(edstr)
 library(DBI)
 library(openxlsx2)
+library(nanoparquet)
 
 # conflicted::conflicts_prefer(dplyr::filter(), .quiet = TRUE)
 
@@ -102,23 +103,6 @@ check_all_ref <- \(df1, df2) {
 
   identical(sum_ref(df1), sum_ref(df2))
 }
-
-### READ CSV -------------------------------------------------------------------
-
-set_coltypes <- \(...) {
-  cols(
-    id_doc = "c",
-    id_sej = "c",
-    id_pat = "c",
-    id_iep = "c",
-    id_ipp = "c",
-    pat_sexe = "f",
-    doc_uf_code = "c",
-    ...
-  )
-}
-
-easy_read_csv <- \(file, ...) read_delim(file, col_types = set_coltypes(...))
 
 ### NOTE AUTO ------------------------------------------------------------------
 
@@ -505,12 +489,12 @@ collect_data_extract <- \(subdir = "extract") {
 
 note_data_path <- \(...) safe_path(root = "note", dir = "data", ...)
 
-note_input_path <- \(dir, suffix = "input", ...) {
+note_input_path <- \(dir, suffix = "input", ext = "parquet", ...) {
   safe_path(
     root = "note",
     dir = str_glue("{dir}/data"),
     suffix = suffix,
-    ext = "csv",
+    ext = ext,
     ...
   )
 }

@@ -28,9 +28,12 @@ db$duckdb$sej <-
 conn$tbl$duckdb("doc") |>
   left_join(y = conn$tbl$duckdb("pat"), by = "ID_PAT") |>
   left_join(y = db$duckdb$sej, by = "ID_SEJ") |>
-  mutate(AGE_PAT = trunc((DATE_ENTREE - DATENAIS) / 365.25)) |>
-  filter(AGE_PAT >= inclusion$pat$age) |>
-  inner_join(db$duckdb$code, by = "ID_PAT") |>
+  mutate(AGE_PAT = ((DATE_ENTREE - DATENAIS) / 365.25) %/% 0.1 * 0.1) |>
+  filter(
+    AGE_PAT >= inclusion$pat$age,
+    UF %in% inclusion$doc$uf
+  ) |>
+  left_join(db$duckdb$code, by = "ID_PAT") |>
   copy_to_db(
     dest = "oracle",
     name = str_glue("ETUDE_{toupper(id)}_DOC")
@@ -71,8 +74,7 @@ conn$tbl$oracle(str_glue("ETUDE_{toupper(id)}_DOC")) |>
 
 db$duckdb$doc <- conn$tbl$duckdb("doc_texte")
 
-df <-
-  db$duckdb$doc |>
+df <- db$duckdb$doc |>
   collect() |>
   mutate(sej_m = str_remove(sej_date_entree, "-\\d{2}$")) |>
   split(~sej_m) |>

@@ -7,11 +7,12 @@ repositories = [
 ]
 
 dependencies = [
-    { name = "edstr", git = "https://codeberg.org/hebstr/edstr.git", branch = "main" },
+    { name = "edstr", git = "https://github.com/hebstr/edstr.git", branch = "main" },
     "tidyverse",
     "yardstick",
     "DatabaseConnector",
     "duckdb",
     "openxlsx2",
     "DBI",
+    "nanoparquet",
 ]

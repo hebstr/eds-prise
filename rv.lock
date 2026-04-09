@@ -360,11 +360,12 @@ dependencies = [
 
 [[packages]]
 name = "edstr"
-version = "0.1.0"
-source = { git = "https://codeberg.org/hebstr/edstr.git", sha = "a1bb871cbf37caeeb102957a7dcdba98b6be821b", branch = "main" }
+version = "0.2.0"
+source = { git = "https://github.com/hebstr/edstr.git", sha = "d8917888ecb9212f960127ccc0a6397cb2fb8e8c", branch = "main" }
 force_source = true
 dependencies = [
     "cli",
+    "config",
     "DatabaseConnector",
     "dplyr",
     "fs",
@@ -374,17 +375,15 @@ dependencies = [
     "purrr",
     "readr",
     "rJava",
-    "rlang",
     "RJDBC",
+    "rlang",
+    "stringi",
     "stringr",
     "tibble",
     "tictoc",
     "tidyr",
     "tidytext",
     "withr",
-    "config",
-    "stringi",
-    "rstudioapi",
 ]
 
 [[packages]]
@@ -765,6 +764,13 @@ dependencies = [
 ]
 
 [[packages]]
+name = "nanoparquet"
+version = "0.4.3"
+source = { repository = "https://packagemanager.posit.co/cran/latest" }
+force_source = false
+dependencies = []
+
+[[packages]]
 name = "openssl"
 version = "2.3.5"
 source = { repository = "https://packagemanager.posit.co/cran/latest" }
@@ -783,13 +789,6 @@ dependencies = [
     "Rcpp",
     "stringi",
 ]
-
-[[packages]]
-name = "pak"
-version = "0.9.2"
-source = { repository = "https://packagemanager.posit.co/cran/latest" }
-force_source = false
-dependencies = []
 
 [[packages]]
 name = "pillar"
