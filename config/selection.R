@@ -3,7 +3,7 @@ inclusion <- lst(
     age = 18,
   ),
   sej = lst(
-    date = c(ymd("2023-01-01"), ymd("2023-03-31")),
+    date = c(ymd("2025-01-01"), ymd("2025-01-31")),
   ),
   doc = lst(
     date = c(sej$date[1], sej$date[2] %m+% months(6)),
